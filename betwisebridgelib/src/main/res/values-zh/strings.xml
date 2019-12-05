@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">BetWiseBridge</string>
+    <!--error code-->
+    <string name="wallet_success">成功</string>
+    <string name="illegal_parameter">参数错误</string>
+    <string name="user_denied">User denied transaction signature.</string>
+    <string name="operation_failed">操作失败</string>
+    <string name="no_wallet_create">请先创建或导入钱包</string>
+    <string name="wallet_not_activated">请先激活钱包</string>
+    <string name="dest_address_error">目的地账号有误</string>
+    <string name="sign_error">签名错误</string>
+</resources>
