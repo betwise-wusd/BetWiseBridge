@@ -250,6 +250,10 @@ class WalletManager {
     }
 
     fun changePassword(mContext: Context, oldpwd: String, newPwd: String, callback: CommonCallBack<BaseBean>) {
+        if (!checkPassword(mContext, oldpwd)) {
+            callback.onFailure(BaseBean( CodeStatus.IS_COMPLETE_PSW_ERROR,"Password Error"))
+            return
+        }
         val md5_pwd = MD5Util.getMD5Str(oldpwd)
         val dwords = SPUtils.get(
                 mContext,
@@ -296,18 +300,44 @@ class WalletManager {
     }
 
     // Get wallet mnemonics
-    fun getMnemonics(mContext: Context, password: String): String?{
+    fun getMnemonics(mContext: Context, password: String, callback: CommonCallBack<GetMnemonicsBean>){
+        if (!checkPassword(mContext, password)) {
+            callback.onFailure(GetMnemonicsBean(CodeStatus.IS_COMPLETE_PSW_ERROR,"Password Error", ""))
+            return
+        }
         val md5_pwd = MD5Util.getMD5Str(password)
         val dwords = SPUtils.get(
                 mContext,
                 SPConstant.WALLET_WORDS,
                 ""
-        ) ?: return null
-        val words= AESUtils2.decrypt(md5_pwd, dwords as String)
-        return words
+        )
+        if(dwords == null){
+            callback.onFailure(GetMnemonicsBean(CodeStatus.IS_COMPLETE_FAIL,"No Wallet", ""))
+        }else{
+            try {
+                val words= AESUtils2.decrypt(md5_pwd, dwords as String)
+                callback.onSuccess(GetMnemonicsBean(CodeStatus.IS_COMPLETE_SUCC, "", words))
+            }catch (e: Exception){
+                callback.onFailure(GetMnemonicsBean(CodeStatus.IS_COMPLETE_FAIL, e.message ?: "", ""))
+            }
+        }
     }
 
-    // Get wallet private key
+    // Get wallet mnemonics for call-back.
+    fun getPrivateKey(mContext: Context, password: String, callback: CommonCallBack<GetPrivateKeyBean>){
+        if (!checkPassword(mContext, password)) {
+            callback.onFailure(GetPrivateKeyBean(CodeStatus.IS_COMPLETE_PSW_ERROR,"Password Error", ""))
+            return
+        }
+        val privateKey = getPrivateKey(mContext, password)
+        if(privateKey.isNullOrEmpty()){
+            callback.onFailure(GetPrivateKeyBean(CodeStatus.IS_COMPLETE_FAIL,"No Wallet", ""))
+        }else{
+            callback.onSuccess(GetPrivateKeyBean(CodeStatus.IS_COMPLETE_SUCC, "", privateKey))
+        }
+    }
+
+    // Get wallet private key for return.
     fun getPrivateKey(mContext: Context, psw: String): String?{
         val helpStr = SPUtils.get(
                 mContext,

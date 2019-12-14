@@ -125,7 +125,9 @@ class UCoinContractBean {
 data class ChangePasswordBean(var newPassword: String, var oldPassword: String)
 data class PasswordBean(var password: String)
 
-class SignHexBean(isComplete: String, errorMsg: String,var signHex:String) : BaseBean(isComplete, errorMsg)
+class SignHexBean(isComplete: String, errorMsg: String, var signHex: String) : BaseBean(isComplete, errorMsg)
+class GetMnemonicsBean(isComplete: String, errorMsg: String, var mnemonics: String): BaseBean(isComplete, errorMsg)
+class GetPrivateKeyBean(isComplete: String, errorMsg: String, var privateKey: String): BaseBean(isComplete, errorMsg)
 
 class CreateAccountBean(var password: String, var helpStr: String)
 

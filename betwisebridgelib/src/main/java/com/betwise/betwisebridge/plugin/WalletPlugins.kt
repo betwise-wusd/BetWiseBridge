@@ -262,12 +262,16 @@ class WalletPlugins {
                 function.onCallBack(JSONUtils.buildResult("error", "Invalid parameter"))
                 return
             }
-            val mnemonics = WalletManager.instance.getMnemonics(mContext, psw)
-            if (!mnemonics.isNullOrBlank()) {
-                function.onCallBack(JSONUtils.buildResult("mnemonics", mnemonics))
-            } else {
-                function.onCallBack(JSONUtils.buildResult("error", "error"))
-            }
+            WalletManager.instance.getMnemonics(mContext, psw, object : CommonCallBack<GetMnemonicsBean> {
+                override fun onSuccess(t: GetMnemonicsBean) {
+                    function.onCallBack(Gson().toJson(t))
+                }
+
+                override fun onFailure(t: GetMnemonicsBean) {
+                    function.onCallBack(Gson().toJson(t))
+                }
+
+            })
         }
 
         //Get wallet private key
@@ -279,12 +283,16 @@ class WalletPlugins {
                 return
             }
 
-            val privateKey = WalletManager.instance.getPrivateKey(mContext, password)
-            if (!privateKey.isNullOrEmpty()) {
-                function.onCallBack(JSONUtils.buildResult("privateKey", privateKey))
-            } else {
-                function.onCallBack(JSONUtils.buildResult("error", "error"))
-            }
+            WalletManager.instance.getPrivateKey(mContext, password, object : CommonCallBack<GetPrivateKeyBean>{
+                override fun onSuccess(t: GetPrivateKeyBean) {
+                    function.onCallBack(Gson().toJson(t))
+                }
+
+                override fun onFailure(t: GetPrivateKeyBean) {
+                    function.onCallBack(Gson().toJson(t))
+                }
+
+            })
         }
     }
 }
