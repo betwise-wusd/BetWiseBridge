@@ -203,7 +203,7 @@ class WalletPlugins {
             val gson = Gson()
             val bean = gson.fromJson<RegIdBean>(args, RegIdBean::class.java)
             val regId = bean.regId
-            if (regId.isNullOrBlank()) {
+            if (regId.isNullOrEmpty()) {
                 function.onCallBack(JSONUtils.buildResult("isComplete", CodeStatus.IS_COMPLETE_FAIL))
                 return
             }
@@ -217,6 +217,7 @@ class WalletPlugins {
             function.onCallBack(JSONUtils.buildResult("regId", regId))
         }
 
+        // Save wallet info
         fun notifyAppSaveWallet(mContext: Context, args: String, function: CallBackFunction){
             val bean = Gson().fromJson<CreateAccountBean>(args, CreateAccountBean::class.java)
             if (bean == null) {
@@ -229,6 +230,60 @@ class WalletPlugins {
                 function.onCallBack(JSONUtils.buildResult("isComplete", CodeStatus.IS_COMPLETE_SUCC))
             } else {
                 function.onCallBack(JSONUtils.buildResult("isComplete", CodeStatus.IS_COMPLETE_FAIL))
+            }
+        }
+
+        // Revise wallet password
+        fun notifyAppRevisePassword(mContext: Context, args: String, function: CallBackFunction){
+            val bean = Gson().fromJson<ChangePasswordBean>(args, ChangePasswordBean::class.java)
+            val newPassword = bean?.newPassword
+            val oldPassword = bean?.oldPassword
+            if (newPassword.isNullOrEmpty() || oldPassword.isNullOrEmpty()) {
+                function.onCallBack(Gson().toJson(BaseBean(CodeStatus.IS_COMPLETE_FAIL, "Password Error")))//JSONUtils.buildResult("isComplete", CodeStatus.IS_COMPLETE_FAIL))
+                return
+            }
+            WalletManager.instance.changePassword(mContext, oldPassword, newPassword, object : CommonCallBack<BaseBean> {
+                override fun onSuccess(bean: BaseBean) {
+                    function.onCallBack(Gson().toJson(bean))
+                }
+
+                override fun onFailure(err: BaseBean) {
+                    function.onCallBack(Gson().toJson(err))
+                }
+            })
+
+        }
+
+        // Get wallet mnemonics
+        fun getMnemonics(mContext: Context, args: String, function: CallBackFunction){
+            val bean = Gson().fromJson<PasswordBean>(args, PasswordBean::class.java)
+            val psw = bean.password
+            if (psw.isNullOrEmpty()) {
+                function.onCallBack(JSONUtils.buildResult("error", "Invalid parameter"))
+                return
+            }
+            val mnemonics = WalletManager.instance.getMnemonics(mContext, psw)
+            if (!mnemonics.isNullOrBlank()) {
+                function.onCallBack(JSONUtils.buildResult("mnemonics", mnemonics))
+            } else {
+                function.onCallBack(JSONUtils.buildResult("error", "error"))
+            }
+        }
+
+        //Get wallet private key
+        fun getPrivateKey(mContext: Context, args: String, function: CallBackFunction){
+            val bean = Gson().fromJson<PasswordBean>(args, PasswordBean::class.java)
+            val password = bean?.password
+            if (password.isNullOrEmpty()) {
+                function.onCallBack(JSONUtils.buildResult("error", "Invalid parameter"))
+                return
+            }
+
+            val privateKey = WalletManager.instance.getPrivateKey(mContext, password)
+            if (!privateKey.isNullOrEmpty()) {
+                function.onCallBack(JSONUtils.buildResult("privateKey", privateKey))
+            } else {
+                function.onCallBack(JSONUtils.buildResult("error", "error"))
             }
         }
     }

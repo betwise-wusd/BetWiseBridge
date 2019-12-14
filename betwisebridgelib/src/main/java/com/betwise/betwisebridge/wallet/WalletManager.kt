@@ -249,6 +249,89 @@ class WalletManager {
         }
     }
 
+    fun changePassword(mContext: Context, oldpwd: String, newPwd: String, callback: CommonCallBack<BaseBean>) {
+        val md5_pwd = MD5Util.getMD5Str(oldpwd)
+        val dwords = SPUtils.get(
+                mContext,
+                SPConstant.WALLET_WORDS,
+                ""
+        )!!.toString()
+        if (!dwords.isNullOrEmpty()) {
+            val words = AESUtils2.decrypt(md5_pwd, dwords)
+            if (words != null) {
+                val new_md5_pwd = MD5Util.getMD5Str(newPwd)
+                val new_en_words = AESUtils2.encrypt(new_md5_pwd, words)
+                SPUtils.put(
+                        mContext,
+                        SPConstant.WALLET_WORDS,
+                        new_en_words
+                )
+
+                callback.onSuccess(BaseBean(CodeStatus.IS_COMPLETE_SUCC, ""))
+            } else {
+                callback.onFailure(BaseBean(CodeStatus.IS_COMPLETE_FAIL, "Password Error"))
+            }
+        } else {
+            val pk = SPUtils.get(
+                    mContext,
+                    SPConstant.WALLET_PRIVATE_KEY,
+                    ""
+            )!!.toString()
+            val dpk = AESUtils2.decrypt(md5_pwd, pk)
+            if (dpk != null) {
+                val new_md5_pwd = MD5Util.getMD5Str(newPwd)
+                val new_en_pk = AESUtils2.encrypt(new_md5_pwd, dpk)
+                SPUtils.put(
+                        mContext,
+                        SPConstant.WALLET_PRIVATE_KEY,
+                        new_en_pk
+                )
+
+                callback.onSuccess(BaseBean(CodeStatus.IS_COMPLETE_SUCC, ""))
+            } else {
+                callback.onFailure(BaseBean(CodeStatus.IS_COMPLETE_FAIL, "Password Error"))
+            }
+        }
+
+    }
+
+    // Get wallet mnemonics
+    fun getMnemonics(mContext: Context, password: String): String?{
+        val md5_pwd = MD5Util.getMD5Str(password)
+        val dwords = SPUtils.get(
+                mContext,
+                SPConstant.WALLET_WORDS,
+                ""
+        ) ?: return null
+        val words= AESUtils2.decrypt(md5_pwd, dwords as String)
+        return words
+    }
+
+    // Get wallet private key
+    fun getPrivateKey(mContext: Context, psw: String): String?{
+        val helpStr = SPUtils.get(
+                mContext,
+                SPConstant.WALLET_WORDS,
+                ""
+        ) ?: return null
+        var privateKey: String? = null
+        try {
+            if (!(helpStr as String).isNullOrEmpty()) {
+                val mn = getHelpStr(mContext, psw)
+                privateKey = Wiccwallet.getPrivateKeyFromMnemonic(
+                        mn,
+                        netType!!.toLong()
+                )
+            } else {
+                privateKey = getPKStr(mContext, psw)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        } finally {
+            return privateKey
+        }
+    }
+
     //Save wallet infomation to native
     fun savePrivateKey(mContext: Context, bean: ImportPrivateKeyBean, password: String): Boolean {
         val md5_pwd = MD5Util.getMD5Str(password)
@@ -337,30 +420,6 @@ class WalletManager {
             context,
             SPConstant.REGID
         )
-    }
-
-    fun getPrivateKey(mContext: Context, psw: String): String? {
-        val helpStr = SPUtils.get(
-            mContext,
-            SPConstant.WALLET_WORDS,
-            ""
-        )!!.toString()
-        var privateKey: String? = null
-        try {
-            if (!helpStr.isNullOrEmpty()) {
-                val mn = getHelpStr(mContext, psw)
-                privateKey = Wiccwallet.getPrivateKeyFromMnemonic(
-                    mn,
-                    netType!!.toLong()
-                )
-            } else {
-                privateKey = getPKStr(mContext, psw)
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        } finally {
-            return privateKey
-        }
     }
 
     fun genWorkerFee(fee: Long): Long {

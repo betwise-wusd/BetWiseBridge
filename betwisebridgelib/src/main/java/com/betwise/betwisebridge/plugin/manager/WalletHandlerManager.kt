@@ -32,6 +32,9 @@ class WalletHandlerManager(val mContext: Context) {
         register(PluginParams.ACTION_SAVE_REGID)
         register(PluginParams.ACTION_GET_REGID)
         register(PluginParams.ACTION_SAVE_WALLET)
+        register(PluginParams.ACTION_NOTIFY_APP_REVISE_PSW)
+        register(PluginParams.ACTION_GET_MNEMONICS)
+        register(PluginParams.ACTION_GET_PRIVATE_KEY)
         return handlerMap
     }
 }
@@ -62,6 +65,9 @@ class WalletHandler(val mContext: Context, val actionName: String): BridgeHandle
                 PluginParams.ACTION_SAVE_REGID -> WalletPlugins.notifyAppSaveRegId(mContext, data, function)
                 PluginParams.ACTION_GET_REGID -> WalletPlugins.getRegId(mContext, function)
                 PluginParams.ACTION_SAVE_WALLET -> WalletPlugins.notifyAppSaveWallet(mContext, data, function)
+                PluginParams.ACTION_NOTIFY_APP_REVISE_PSW -> WalletPlugins.notifyAppRevisePassword(mContext, data, function)
+                PluginParams.ACTION_GET_MNEMONICS -> WalletPlugins.getMnemonics(mContext, data, function)
+                PluginParams.ACTION_GET_PRIVATE_KEY -> WalletPlugins.getPrivateKey(mContext, data, function)
             }
         }catch (e:Exception){
             function.onCallBack(

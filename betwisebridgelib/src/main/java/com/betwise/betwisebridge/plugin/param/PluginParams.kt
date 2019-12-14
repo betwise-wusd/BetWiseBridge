@@ -26,5 +26,11 @@ object PluginParams {
     const val ACTION_GET_REGID = "getRegId"
     //保存钱包信息
     const val ACTION_SAVE_WALLET = "notifyAppSaveWallet"
+    //修改钱包密码
+    const val ACTION_NOTIFY_APP_REVISE_PSW = "notifyAppRevisePassword"
+    //导出助记词
+    const val ACTION_GET_MNEMONICS = "getMnemonics"
+    //导出私钥
+    const val ACTION_GET_PRIVATE_KEY = "getPrivateKey"
 
 }

@@ -122,6 +122,8 @@ class UCoinContractBean {
     var genSign: String? =null
 }
 
+data class ChangePasswordBean(var newPassword: String, var oldPassword: String)
+data class PasswordBean(var password: String)
 
 class SignHexBean(isComplete: String, errorMsg: String,var signHex:String) : BaseBean(isComplete, errorMsg)
 
