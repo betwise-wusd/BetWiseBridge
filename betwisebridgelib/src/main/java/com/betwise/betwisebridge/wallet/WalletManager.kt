@@ -157,7 +157,7 @@ class WalletManager {
     }
 
     // Transfer by Multi-currency
-    fun ucoinTransfer(mContext: Context, pwd: String, fee: String, height: Int, regid: String, feeSymbol: String, tbean: UCoinTransferBean, walletCallback: CommonCallBack<SignHexBean>){
+    fun ucoinTransfer(mContext: Context, pwd: String, fee: String, height: Int, regid: String?, feeSymbol: String, tbean: UCoinTransferBean, walletCallback: CommonCallBack<SignHexBean>){
         checkNetType()
         if (!checkPassword(mContext, pwd)) {
             walletCallback.onFailure(SignHexBean( CodeStatus.IS_COMPLETE_PSW_ERROR,"Password Error", ""))
@@ -216,7 +216,7 @@ class WalletManager {
     fun ucoinContractInvoke(mContext: Context,
                             pwd: String,
                             height: Int,
-                            userid: String,
+                            userid: String?,
                             fees: String,
                             feeSymbol: String,
                             bean: UCoinContractBean, walletCallback: CommonCallBack<SignHexBean>){

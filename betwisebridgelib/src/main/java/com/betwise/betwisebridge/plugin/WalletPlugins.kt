@@ -119,7 +119,7 @@ class WalletPlugins {
             val memo = bean?.memo
 
             if (password.isNullOrEmpty() || fee.isNullOrEmpty() || feeSymbol.isNullOrEmpty()
-                || validHeight == null || regId.isNullOrEmpty()) {
+                || validHeight == null) {
                 function.onCallBack(Gson().toJson(SignHexBean(CodeStatus.IS_COMPLETE_FAIL, "","")))
                 return
             }
@@ -168,7 +168,6 @@ class WalletPlugins {
                 validHeight == null ||
                 fees.isNullOrEmpty() ||
                 regId.isNullOrEmpty() ||
-                userid.isNullOrEmpty() ||
                 contract.isNullOrEmpty() ||
                 feeSymbol.isNullOrEmpty()
             ) {
