@@ -42,18 +42,6 @@ class WalletHandlerManager(val mContext: Context) {
 class WalletHandler(val mContext: Context, val actionName: String): BridgeHandler{
 
     override fun handler(data: String, function: CallBackFunction) {
-        val address = SPUtils.get(mContext, SPConstant.WALLET_ADDRESS, "") as String
-        if(address.isNullOrEmpty()){
-            function.onCallBack(
-                Gson().toJson(
-                    DappBean(
-                        CodeStatus.WALLET_NOT_EXIT,
-                        WalletError.getMsgByErrorCode(mContext, CodeStatus.WALLET_NOT_EXIT)
-                    )
-                )
-            )
-            return
-        }
         try {
             when(actionName){
                 PluginParams.ACTION_CREATE_NEW_ACCOUNT -> WalletPlugins.notifyAppCreateNewAccount(data, function)
