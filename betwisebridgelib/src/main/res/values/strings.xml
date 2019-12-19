@@ -6,6 +6,7 @@
     <string name="user_denied">User denied transaction signature.</string>
     <string name="operation_failed">Operation failed</string>
     <string name="no_wallet_create">Please create or import wallet first.</string>
+    <string name="no_permission">No file read and write permissions</string>
     <string name="wallet_not_activated">Please register your wallet first</string>
     <string name="dest_address_error">Wrong address</string>
     <string name="sign_error">Signature error</string>

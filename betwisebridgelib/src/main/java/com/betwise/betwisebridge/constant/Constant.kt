@@ -41,5 +41,7 @@ object CodeStatus {
     //失败
     val FAIL = 102
     // 钱包不存在
-    val WALLET_NOT_EXIT=2000
+    val WALLET_NOT_EXIT = 2000
+    //没有权限
+    val NO_PERMISSION = 3000
 }

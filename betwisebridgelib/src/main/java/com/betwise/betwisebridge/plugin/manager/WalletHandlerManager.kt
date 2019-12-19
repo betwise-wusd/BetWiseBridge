@@ -1,6 +1,8 @@
 package com.betwise.betwisebridge.plugin.manager
 
 import android.content.Context
+import android.content.pm.PackageManager
+import androidx.core.content.ContextCompat
 import com.betwise.betwisebridge.bean.DappBean
 import com.betwise.betwisebridge.constant.CodeStatus
 import com.betwise.betwisebridge.constant.SPConstant
@@ -11,6 +13,7 @@ import com.betwise.betwisebridge.utils.SPUtils
 import com.github.lzyzsd.jsbridge.BridgeHandler
 import com.github.lzyzsd.jsbridge.CallBackFunction
 import com.google.gson.Gson
+import java.util.jar.Manifest
 
 /**
  * Date: 2019-11-26
@@ -42,6 +45,19 @@ class WalletHandlerManager(val mContext: Context) {
 class WalletHandler(val mContext: Context, val actionName: String): BridgeHandler{
 
     override fun handler(data: String, function: CallBackFunction) {
+        //check permission
+        if(ContextCompat.checkSelfPermission(mContext, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED){
+            function.onCallBack(
+                    Gson().toJson(
+                            DappBean(
+                                    CodeStatus.NO_PERMISSION,
+                                    WalletError.getMsgByErrorCode(mContext, CodeStatus.NO_PERMISSION)
+                            )
+                    )
+            )
+            return
+        }
         try {
             when(actionName){
                 PluginParams.ACTION_CREATE_NEW_ACCOUNT -> WalletPlugins.notifyAppCreateNewAccount(data, function)
