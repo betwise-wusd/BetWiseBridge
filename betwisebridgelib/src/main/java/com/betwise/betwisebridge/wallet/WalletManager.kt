@@ -208,7 +208,7 @@ class WalletManager {
             }
 
         } catch (e: Exception) {
-            walletCallback.onFailure(SignHexBean(CodeStatus.IS_COMPLETE_FAIL, CodeStatus.Incorrect_dest_account, ""))
+            walletCallback.onFailure(SignHexBean(CodeStatus.IS_COMPLETE_FAIL, CodeStatus.Signature_exception, ""))
         }
     }
 

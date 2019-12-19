@@ -93,6 +93,18 @@ class WalletPlugins {
 
         // Get wallet infomation
         fun getAddressInfo(mContext: Context, args: String, function: CallBackFunction){
+            if(!checkAddressExist(mContext)){
+                function.onCallBack(
+                        Gson().toJson(
+                                DappBean(
+                                        CodeStatus.WALLET_NOT_EXIT,
+                                        WalletError.getMsgByErrorCode(mContext, CodeStatus.WALLET_NOT_EXIT)
+                                )
+                        )
+                )
+                return
+            }
+
             val address = SPUtils.get(mContext, SPConstant.WALLET_ADDRESS, "") as String
             val addressInfoBean = AddressInfoBean()
             addressInfoBean.address = address
@@ -110,6 +122,17 @@ class WalletPlugins {
 
         // Transfer by Multi-currency
         fun getUCoinTransferSignHex(mContext: Context, args: String, function: CallBackFunction) {
+            if(!checkAddressExist(mContext)){
+                function.onCallBack(
+                        Gson().toJson(
+                                DappBean(
+                                        CodeStatus.WALLET_NOT_EXIT,
+                                        WalletError.getMsgByErrorCode(mContext, CodeStatus.WALLET_NOT_EXIT)
+                                )
+                        )
+                )
+                return
+            }
             val bean = Gson().fromJson<WalletUCoinTransferSignHexBean>(args, WalletUCoinTransferSignHexBean::class.java)
             val password = bean?.password
             val validHeight = bean?.height
@@ -152,6 +175,17 @@ class WalletPlugins {
 
         // Call the contract by Multi-currency
         fun getUCoinContractSignHex(mContext: Context, args: String, function: CallBackFunction) {
+            if(!checkAddressExist(mContext)){
+                function.onCallBack(
+                        Gson().toJson(
+                                DappBean(
+                                        CodeStatus.WALLET_NOT_EXIT,
+                                        WalletError.getMsgByErrorCode(mContext, CodeStatus.WALLET_NOT_EXIT)
+                                )
+                        )
+                )
+                return
+            }
             val bean = Gson().fromJson<WalletUCoinContractBean>(args, WalletUCoinContractBean::class.java)
             val password = bean?.password
             val validHeight = bean?.height
@@ -234,6 +268,17 @@ class WalletPlugins {
 
         // Revise wallet password
         fun notifyAppRevisePassword(mContext: Context, args: String, function: CallBackFunction){
+            if(!checkAddressExist(mContext)){
+                function.onCallBack(
+                        Gson().toJson(
+                                DappBean(
+                                        CodeStatus.WALLET_NOT_EXIT,
+                                        WalletError.getMsgByErrorCode(mContext, CodeStatus.WALLET_NOT_EXIT)
+                                )
+                        )
+                )
+                return
+            }
             val bean = Gson().fromJson<ChangePasswordBean>(args, ChangePasswordBean::class.java)
             val newPassword = bean?.newPassword
             val oldPassword = bean?.oldPassword
@@ -255,6 +300,17 @@ class WalletPlugins {
 
         // Get wallet mnemonics
         fun getMnemonics(mContext: Context, args: String, function: CallBackFunction){
+            if(!checkAddressExist(mContext)){
+                function.onCallBack(
+                        Gson().toJson(
+                                DappBean(
+                                        CodeStatus.WALLET_NOT_EXIT,
+                                        WalletError.getMsgByErrorCode(mContext, CodeStatus.WALLET_NOT_EXIT)
+                                )
+                        )
+                )
+                return
+            }
             val bean = Gson().fromJson<PasswordBean>(args, PasswordBean::class.java)
             val psw = bean.password
             if (psw.isNullOrEmpty()) {
@@ -275,6 +331,17 @@ class WalletPlugins {
 
         //Get wallet private key
         fun getPrivateKey(mContext: Context, args: String, function: CallBackFunction){
+            if(!checkAddressExist(mContext)){
+                function.onCallBack(
+                        Gson().toJson(
+                                DappBean(
+                                        CodeStatus.WALLET_NOT_EXIT,
+                                        WalletError.getMsgByErrorCode(mContext, CodeStatus.WALLET_NOT_EXIT)
+                                )
+                        )
+                )
+                return
+            }
             val bean = Gson().fromJson<PasswordBean>(args, PasswordBean::class.java)
             val password = bean?.password
             if (password.isNullOrEmpty()) {
@@ -292,6 +359,11 @@ class WalletPlugins {
                 }
 
             })
+        }
+
+        private fun checkAddressExist(mContext: Context): Boolean{
+            val address = SPUtils.get(mContext, SPConstant.WALLET_ADDRESS, "") as String
+            return address.isNotEmpty()
         }
     }
 }
