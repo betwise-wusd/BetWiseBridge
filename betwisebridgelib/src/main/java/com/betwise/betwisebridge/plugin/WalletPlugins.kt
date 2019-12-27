@@ -214,6 +214,7 @@ class WalletPlugins {
             coinContractBean.amount=value
             coinContractBean.memo=memo
             coinContractBean.contract=contract
+            coinContractBean.regId = regId
 
             WalletManager.instance.ucoinContractInvoke(mContext, password,
                 validHeight,
