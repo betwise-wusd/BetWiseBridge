@@ -53,15 +53,15 @@ class WalletPlugins {
             }
             WalletManager.instance.importWallet(helpStr!!,
                 object : CommonCallBack<CreateOrImportWalletBean> {
-                    override fun onSuccess(bean: CreateOrImportWalletBean) {
+                    override fun onSuccess(sucbean: CreateOrImportWalletBean) {
                         val walletSuccGson = Gson()
-                        val resultSucc = walletSuccGson.toJson(bean)
+                        val resultSucc = walletSuccGson.toJson(sucbean)
                         function.onCallBack(resultSucc)
                     }
 
                     override fun onFailure(errBean: CreateOrImportWalletBean) {
                         val walletSuccGson = Gson()
-                        val resultFail = walletSuccGson.toJson(bean)
+                        val resultFail = walletSuccGson.toJson(errBean)
                         function.onCallBack(resultFail)
                     }
                 })

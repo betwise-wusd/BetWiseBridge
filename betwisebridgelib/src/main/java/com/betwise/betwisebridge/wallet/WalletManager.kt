@@ -111,7 +111,6 @@ class WalletManager {
             )
             callback.onSuccess(bean)
         } catch (e: Exception) {
-            e.printStackTrace()
             callback.onFailure(
                 CreateOrImportWalletBean(
                     CodeStatus.IS_COMPLETE_FAIL,
