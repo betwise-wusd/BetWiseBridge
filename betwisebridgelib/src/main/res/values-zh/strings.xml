@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">BetWiseBridge</string>
     <!--error code-->
     <string name="wallet_success">成功</string>
     <string name="illegal_parameter">参数错误</string>
